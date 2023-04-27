@@ -1,5 +1,7 @@
 package org.jsp.supermarket.service;
 
+import java.util.Random;
+
 import org.jsp.supermarket.dao.CustomerDao;
 import org.jsp.supermarket.dao.MerchantDao;
 import org.jsp.supermarket.dao.ProductDao;
@@ -12,6 +14,8 @@ import org.jsp.supermarket.helper.VerificationEmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
+
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class CustomerService {
@@ -55,7 +59,7 @@ public class CustomerService {
 		return andView;
 	}
 
-	public ModelAndView login(Login login) {
+	public ModelAndView login(Login login,HttpSession session) {
 		ModelAndView andView = new ModelAndView();
 
 		Customer customer = dao.find(login.getId());
@@ -65,7 +69,8 @@ public class CustomerService {
 		} else {
 			if (customer.getPassword().equals(login.getPassword())) {
 				if (customer.isStatus()) {
-					andView.setViewName("Home");
+					session.setAttribute("customer", customer);
+					andView.setViewName("CustomerHome");
 					andView.addObject("msg", "Login Succcess");
 				} else {
 					andView.setViewName("CustomerLogin");
@@ -75,6 +80,37 @@ public class CustomerService {
 				andView.setViewName("CustomerLogin");
 				andView.addObject("msg", "Invalid Password");
 			}
+		}
+
+		return andView;
+	}
+
+	public ModelAndView signup(Customer customer, HttpSession session) {
+		ModelAndView andView = new ModelAndView("OtpVerify");
+		customer.setOtp(new Random().nextInt(100000, 999999));
+
+		// emailSender.sendEmail(customer);
+
+		Customer customer2 = dao.save(customer);
+		session.setAttribute("customer", customer2);
+		andView.addObject("msg", "Verification Mail Sent verify OTP to create account");
+		andView.addObject("msg1", "Your Customer Id is : " + customer2.getId() + "");
+		return andView;
+
+	}
+
+	public ModelAndView verifyOtp(HttpSession session, int otp) {
+		ModelAndView andView = new ModelAndView();
+		Customer customer = (Customer) session.getAttribute("customer");
+		if (customer.getOtp() == otp) {
+			customer.setStatus(true);
+			dao.save(customer);
+			andView.setViewName("CustomerLogin");
+			andView.addObject("msg", "Account created Successfully");
+			session.invalidate();
+		} else {
+			andView.setViewName("OtpVerify");
+			andView.addObject("msg", "Invalid OTP");
 		}
 
 		return andView;

@@ -17,4 +17,20 @@ public class AdminService {
 		return andView;
 	}
 
+	public ModelAndView login(Login login) {
+		ModelAndView andView = new ModelAndView();
+		if (login.getId().equals("admin")) {
+			if (login.getPassword().equals("admin")) {
+				andView.setViewName("AdminHome");
+			} else {
+				andView.setViewName("AdminLogin");
+				andView.addObject("msg", "Invalid Password");
+			}
+		} else {
+			andView.setViewName("AdminLogin");
+			andView.addObject("msg", "Invalid Id");
+		}
+		return andView;
+	}
+
 }

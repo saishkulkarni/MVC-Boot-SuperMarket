@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Customer Signup</title>
+<title>Merchant Signup</title>
 <style>
     body {
         background-color: #f2f2f2;
@@ -61,17 +61,16 @@
 </style>
 </head>
 <body>
-<h1>Enter Customer Details</h1><br>
-<spring:form action="signup" method="post" modelAttribute="customer">
+<h1>Enter Merchant Details</h1><br>
+<spring:form action="signup" method="post" modelAttribute="merchant">
 Name:<input type="text" name="name" placeholder="Enter Name"><br>
 Email:<input type="email" name="email" placeholder="Enter Email"><br>
 Mobile:<input type="tel" pattern="[0-9]{10}" name="mobile" placeholder="Enter Mobile"><br>
 Password:<input type="password" name="password" placeholder="Enter Password"><br>
-Address:<textarea rows="5" cols="30" name="address" placeholder="Enter Address"></textarea> <br>
 <button type="reset">Cancel</button><button>Signup</button>
 </spring:form>
 <br>
-<a href="login">Already Customer? Click here to Login</a>
+<a href="login">Already Merchant? Click here to Login</a>
     <br>
     <a href="/">
         <button>Home</button>
